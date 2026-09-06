@@ -36,4 +36,4 @@ Eklenti, takip ettiğiniz yayıncıların canlı olup olmadığını kontrol ede
 
 ## Firefox Sürümü
 
-Firefox sürümüne şu depodan ulaşabilirsiniz: https://github.com/insanmusti/kick-yayin-takipcisi
+Firefox sürümüne şu depodan ulaşabilirsiniz: https://github.com/akamusti/kick-yayin-takipcisi
