@@ -61,7 +61,7 @@ function applySearchFilter() {
   let visibleCount = 0;
 
   cards.forEach((card) => {
-    const nameEl = card.querySelector(".channel-name");
+    const nameEl = card.querySelector(".channel-name, .live-name");
     const name = nameEl ? nameEl.textContent.toLowerCase() : "";
     const match = !searchQuery || name.includes(searchQuery);
     card.style.display = match ? "" : "none";
@@ -437,6 +437,44 @@ async function removeChannel(channelName) {
   chrome.runtime.sendMessage({ action: "updateBadge" });
 }
 
+function getStreamCategory(livestream) {
+  const cats = livestream?.categories;
+  if (Array.isArray(cats) && cats.length > 0 && cats[0]?.name) {
+    return cats[0].name;
+  }
+  return "";
+}
+
+function getStreamThumb(livestream) {
+  const thumb = livestream?.thumbnail;
+  if (!thumb) return "";
+  if (typeof thumb === "string") return thumb;
+  return thumb.src || "";
+}
+
+function formatViewerCount(count, lang) {
+  const n = Number(count) || 0;
+  try {
+    return n.toLocaleString(lang === "tr" ? "tr-TR" : "en-US");
+  } catch (e) {
+    return String(n);
+  }
+}
+
+function formatLiveDuration(livestream) {
+  const start = livestream?.start_time || livestream?.created_at || livestream?.startTime;
+  if (!start) return "";
+  const startMs = Date.parse(String(start).replace(" ", "T"));
+  if (Number.isNaN(startMs)) return "";
+  let diff = Math.max(0, Math.floor((Date.now() - startMs) / 1000));
+  const h = Math.floor(diff / 3600);
+  diff -= h * 3600;
+  const m = Math.floor(diff / 60);
+  const s = diff - m * 60;
+  const pad = (v) => String(v).padStart(2, "0");
+  return `${pad(h)}:${pad(m)}:${pad(s)}`;
+}
+
 function renderChannelCard(container, item) {
   const card = document.createElement("div");
   card.className = "channel-card";
@@ -513,69 +551,157 @@ function renderChannelCard(container, item) {
   } else {
     const isLive = item.data.livestream !== null;
     const viewers = isLive ? item.data.livestream.viewer_count : 0;
-    const avatarUrl = item.data.user?.profile_pic || "../icon/icon.png";
-
-    const topDiv = document.createElement("div");
-    topDiv.className = "channel-top";
-
-    const leftDiv = document.createElement("div");
-    leftDiv.className = "channel-left";
-
-    const avatarImg = document.createElement("img");
-    avatarImg.className = "avatar";
-    avatarImg.src = avatarUrl;
-    avatarImg.alt = item.name;
-
-    const detailsDiv = document.createElement("div");
-    detailsDiv.className = "channel-details";
-
-    const channelLink = document.createElement("a");
-    channelLink.href = `https://kick.com/${item.name}`;
-    channelLink.target = "_blank";
-    channelLink.className = "channel-name";
-    channelLink.textContent = item.name;
-
-    const statusSpan = document.createElement("span");
-    statusSpan.className = `status ${isLive ? "live" : "offline"}`;
-    getSavedLang().then((lang) => {
-      statusSpan.textContent = isLive ? t("live_with_viewers", lang).replace("{viewers}", viewers) : t("offline", lang);
-    });
-
-    detailsDiv.appendChild(channelLink);
-    detailsDiv.appendChild(statusSpan);
-
-    leftDiv.appendChild(avatarImg);
-    leftDiv.appendChild(detailsDiv);
-
-    topDiv.appendChild(leftDiv);
-    topDiv.appendChild(actionsDiv);
-
-    card.appendChild(topDiv);
 
     if (isLive) {
-      const streamDiv = document.createElement("div");
-      streamDiv.className = "stream-info";
+      // Canlı kart: tek blok (referans görseldeki düzen, tekrar yok)
+      card.classList.add("is-live");
+      const displayName = item.data.user?.display_name || item.data.user?.username || item.name;
+      const category = getStreamCategory(item.data.livestream);
+      const thumbUrl = getStreamThumb(item.data.livestream);
+      const duration = formatLiveDuration(item.data.livestream);
 
-      const thumbUrl = item.data.livestream?.thumbnail;
+      const liveRow = document.createElement("div");
+      liveRow.className = "live-row";
+
       if (thumbUrl) {
+        const thumbWrap = document.createElement("a");
+        thumbWrap.href = `https://kick.com/${item.name}`;
+        thumbWrap.target = "_blank";
+        thumbWrap.className = "live-thumb-wrap";
+
         const thumbImg = document.createElement("img");
-        thumbImg.className = "stream-thumb";
+        thumbImg.className = "live-thumb";
         thumbImg.src = thumbUrl;
         thumbImg.alt = "";
+        thumbImg.loading = "lazy";
         thumbImg.addEventListener("error", () => {
-          thumbImg.remove();
+          thumbWrap.remove();
         });
-        streamDiv.appendChild(thumbImg);
+        thumbWrap.appendChild(thumbImg);
+
+        if (duration) {
+          const durBadge = document.createElement("span");
+          durBadge.className = "live-duration";
+          durBadge.textContent = duration;
+          thumbWrap.appendChild(durBadge);
+        }
+        liveRow.appendChild(thumbWrap);
       }
 
-      const titleSpan = document.createElement("span");
-      titleSpan.className = "stream-title";
-      titleSpan.textContent = item.data.livestream?.session_title || item.name;
-      streamDiv.appendChild(titleSpan);
+      const liveMain = document.createElement("div");
+      liveMain.className = "live-main";
 
-      card.appendChild(streamDiv);
+      const liveTop = document.createElement("div");
+      liveTop.className = "live-top";
+
+      const avatarImg = document.createElement("img");
+      avatarImg.className = "live-avatar";
+      avatarImg.src = item.data.user?.profile_pic || "../icon/icon.png";
+      avatarImg.alt = "";
+      avatarImg.loading = "lazy";
+      avatarImg.addEventListener("error", () => {
+        if (!avatarImg.dataset.fallback) {
+          avatarImg.dataset.fallback = "1";
+          avatarImg.src = "../icon/icon.png";
+        } else {
+          avatarImg.remove();
+        }
+      });
+
+      const nameLink = document.createElement("a");
+      nameLink.href = `https://kick.com/${item.name}`;
+      nameLink.target = "_blank";
+      nameLink.className = "live-name";
+      nameLink.textContent = displayName;
+
+      const viewersSpan = document.createElement("span");
+      viewersSpan.className = "live-viewers";
+      getSavedLang().then((lang) => {
+        viewersSpan.textContent = `\u{1F465} ${formatViewerCount(viewers, lang)}`;
+      });
+
+      liveTop.appendChild(avatarImg);
+      liveTop.appendChild(nameLink);
+      liveTop.appendChild(viewersSpan);
+      liveMain.appendChild(liveTop);
+
+      const titleSpan = document.createElement("span");
+      titleSpan.className = "live-title";
+      titleSpan.textContent = item.data.livestream?.session_title || item.name;
+      titleSpan.title = titleSpan.textContent;
+      liveMain.appendChild(titleSpan);
+
+      if (category) {
+        const catSpan = document.createElement("span");
+        catSpan.className = "live-category";
+        catSpan.textContent = category;
+        catSpan.title = category;
+        liveMain.appendChild(catSpan);
+      }
+
+      liveRow.appendChild(liveMain);
+      card.appendChild(liveRow);
+
+      const liveFoot = document.createElement("div");
+      liveFoot.className = "live-foot";
+
+      const statusSpan = document.createElement("span");
+      statusSpan.className = "status live";
+      getSavedLang().then((lang) => {
+        statusSpan.textContent = `\u25CF ${t("live", lang)}`;
+      });
+
+      liveFoot.appendChild(statusSpan);
+      liveFoot.appendChild(actionsDiv);
+      card.appendChild(liveFoot);
+    } else {
+      const avatarUrl = item.data.user?.profile_pic || "../icon/icon.png";
+
+      const topDiv = document.createElement("div");
+      topDiv.className = "channel-top";
+
+      const leftDiv = document.createElement("div");
+      leftDiv.className = "channel-left";
+
+      const avatarImg = document.createElement("img");
+      avatarImg.className = "avatar";
+      avatarImg.src = avatarUrl;
+      avatarImg.alt = item.name;
+
+      const detailsDiv = document.createElement("div");
+      detailsDiv.className = "channel-details";
+
+      const channelLink = document.createElement("a");
+      channelLink.href = `https://kick.com/${item.name}`;
+      channelLink.target = "_blank";
+      channelLink.className = "channel-name";
+      channelLink.textContent = item.name;
+
+      const statusSpan = document.createElement("span");
+      statusSpan.className = "status offline";
+      getSavedLang().then((lang) => {
+        statusSpan.textContent = t("offline", lang);
+      });
+
+      detailsDiv.appendChild(channelLink);
+      detailsDiv.appendChild(statusSpan);
+
+      leftDiv.appendChild(avatarImg);
+      leftDiv.appendChild(detailsDiv);
+
+      topDiv.appendChild(leftDiv);
+      topDiv.appendChild(actionsDiv);
+
+      card.appendChild(topDiv);
     }
   }
+
+  // Kartın boş bir yerine tıklanınca da yayın açılsın (buton/link tıklamaları hariç)
+  card.classList.add("clickable");
+  card.addEventListener("click", (e) => {
+    if (e.target.closest("a, button")) return;
+    chrome.tabs.create({ url: `https://kick.com/${item.name}` });
+  });
 
   container.appendChild(card);
 }
