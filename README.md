@@ -1,38 +1,31 @@
 # Kick Yayın Bildirici (Chromium)
 
-Kick platformundaki favori yayıncılarınızın canlı yayın durumlarını anlık olarak takip etmenizi sağlayan Chromium tabanlı tarayıcı eklentisi (Chrome, Edge, Brave, Opera vb.).
-Kick yayıncılarını takip etmenizi sağlayan basit bir tarayıcı eklentisidir.
-Eklenti, takip ettiğiniz yayıncıların canlı olup olmadığını kontrol eder.
+Chrome, Edge, Brave ve diğer Chromium tabanlı tarayıcılar için Kick yayın bildirim eklentisi.
 
 ## Özellikler
 
-- Kick kullanıcı adı ekleme ve silme
-- Takip edilen yayıncıların canlı/çevrimdışı durumunu görme
-- Canlı yayınlardaki izleyici sayısını görme
-- Yayıncıların profil fotoğrafını isminin yanında gösterme
-- Canlı yayın sayısını eklenti simgesinde rozet olarak gösterme
-- Yayıncı adına tıklayarak Kick kanalını açma
-- Yaklaşık iki dakikada bir otomatik durum kontrolü
+- Kick kanallarını takip etme ve canlı/çevrimdışı durumlarını görme
+- Canlı kanal sayısını eklenti simgesinde gösterme ve yayın başladığında bildirim alma
+- Kanalları sabitleme, susturma, arama ve canlı durumuna göre sıralama
+- İsteğe bağlı kanal önerileri
+- Elle kontrol ve 1, 2, 5 veya 10 dakikalık kontrol sıklığı
+- Bildirim saat aralığı ve sistem, zil veya sessiz bildirim sesi seçenekleri
+- Canlı yayın başlığı, izleyici sayısı ve takip istatistikleri
+- Kanal listesini dışa ve içe aktarma
+- Türkçe ve İngilizce arayüz, altı renk teması
+- Takip listesi ve ayarlar yalnızca `chrome.storage.local` içinde saklanır
 
-## Kurulum (Geliştirici Modu)
+## Kurulum (Geliştirici modu)
 
-1. Bu klasörü bilgisayarınızda tutun (zip olarak indirdiğiniz için çıkartın).
-2. Tarayıcınızda `chrome://extensions` adresine gidin.
-3. Sağ üst köşedeki **Geliştirici modu** anahtarını açın.
-4. **Paketlenmemiş öğe yükle** (*Load unpacked*) butonuna tıklayın.
-5. Bu klasörü (`kick-takipci-chromium`) seçin.
-
----
+1. Tarayıcıda `chrome://extensions` adresini açın.
+2. **Geliştirici modu** seçeneğini etkinleştirin.
+3. **Paketlenmemiş öğe yükle** (*Load unpacked*) seçeneğine tıklayın.
+4. Bu klasörü seçin.
 
 ## Kullanım
 
-1. Eklenti simgesine tıklayın.
-2. Kick kullanıcı adını yazın ve **Ekle**ye basın.
-3. Listedeki yayıncıya tıklayarak kanalını açın.
-4. Takipten çıkarmak için yayıncının yanındaki **Sil** düğmesine basın.
+Eklenti simgesini açıp Kick kullanıcı adını ekleyin. Kanal kartından yayına gidebilir, kanalı sabitleyebilir veya bildirimlerini susturabilirsiniz. Ayarlar panelinden bildirimleri, kontrol sıklığını, ses tercihini ve yedeklemeyi yönetin.
 
----
+## Firefox sürümü
 
-## Firefox Sürümü
-
-Firefox sürümüne şu depodan ulaşabilirsiniz: https://github.com/akamusti/kick-yayin-takipcisi
+Firefox sürümü: https://github.com/akamusti/kick-yayin-takipcisi
