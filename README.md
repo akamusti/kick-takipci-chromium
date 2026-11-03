@@ -1,31 +1,31 @@
-# Kick Yayın Bildirici (Chromium)
+# Kick Stream Notifier (Chromium)
 
-Chrome, Edge, Brave ve diğer Chromium tabanlı tarayıcılar için Kick yayın bildirim eklentisi.
+A browser extension for Chrome, Edge, Brave, and other Chromium-based browsers that helps you track Kick channels and get notified when they go live.
 
-## Özellikler
+## Features
 
-- Kick kanallarını takip etme ve canlı/çevrimdışı durumlarını görme
-- Canlı kanal sayısını eklenti simgesinde gösterme ve yayın başladığında bildirim alma
-- Kanalları sabitleme, susturma, arama ve canlı durumuna göre sıralama
-- İsteğe bağlı kanal önerileri
-- Elle kontrol ve 1, 2, 5 veya 10 dakikalık kontrol sıklığı
-- Bildirim saat aralığı ve sistem, zil veya sessiz bildirim sesi seçenekleri
-- Canlı yayın başlığı, izleyici sayısı ve takip istatistikleri
-- Kanal listesini dışa ve içe aktarma
-- Türkçe ve İngilizce arayüz, altı renk teması
-- Takip listesi ve ayarlar yalnızca `chrome.storage.local` içinde saklanır
+- Track Kick channels and see whether they are live or offline
+- See the live channel count on the extension badge and get notified when a stream starts
+- Pin, mute, search, and sort channels by live status
+- Browse optional channel suggestions
+- Check channels manually and choose a 1, 2, 5, or 10-minute check interval
+- Set notification hours and choose system, chime, or silent notification sounds
+- View stream titles, viewer counts, and tracking statistics
+- Export and import your channel list
+- Use the interface in Turkish or English and choose from six color themes
+- Keep your channel list and settings in `chrome.storage.local`
 
-## Kurulum (Geliştirici modu)
+## Installation (Developer mode)
 
-1. Tarayıcıda `chrome://extensions` adresini açın.
-2. **Geliştirici modu** seçeneğini etkinleştirin.
-3. **Paketlenmemiş öğe yükle** (*Load unpacked*) seçeneğine tıklayın.
-4. Bu klasörü seçin.
+1. Open `chrome://extensions` in your browser.
+2. Enable **Developer mode**.
+3. Click **Load unpacked**.
+4. Select this repository folder.
 
-## Kullanım
+## Usage
 
-Eklenti simgesini açıp Kick kullanıcı adını ekleyin. Kanal kartından yayına gidebilir, kanalı sabitleyebilir veya bildirimlerini susturabilirsiniz. Ayarlar panelinden bildirimleri, kontrol sıklığını, ses tercihini ve yedeklemeyi yönetin.
+Open the extension popup and add a Kick username. From a channel card, you can open the channel, pin it, or mute its notifications. Use the Settings panel to manage notifications, the check interval, notification sound, and backups.
 
-## Firefox sürümü
+## Firefox version
 
-Firefox sürümü: https://github.com/akamusti/kick-yayin-takipcisi
+The Firefox version is available at [akamusti/kick-yayin-takipcisi](https://github.com/akamusti/kick-yayin-takipcisi).
